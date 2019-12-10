@@ -1,0 +1,1554 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>逆水寒模拟器</title>
+    <meta name="format-detection" content="telephone=no">
+    <!--[if lt IE 9]>
+    <script src="https://nie.res.netease.com/comm/html5/html5shiv.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/css/main.css">
+    <script src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/san.js"></script>
+    <script src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/san-mixin.js"></script>
+    <link rel="stylesheet" href="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/css/role.css">
+    <script>
+        function mapPriceColor(price, is_add_unit) {
+            if (!price || isNaN(price)) {
+                return price;
+            }
+            var unit = is_add_unit ? '（元）' : '';
+            var color = "#333333";
+            if (price >= 100 && price <= 999) {
+                color = "#39b322"; // 绿
+            } else if (price >= 1000 && price <= 9999) {
+                color = "#3675df"; // 蓝
+            } else if (price >= 10000) {
+                color = "#d95145"; // 红
+            }
+            return '<span style="color: ' + color + '">' + price.toFixed(2) + unit + '</span>';
+        }
+    </script>
+    <script src="js\config.js"></script>
+    <script src="js\entryLibrary.js"></script>
+    <script src="js\class.js"></script>
+    <script src="js\core.js"></script>
+    <script src="js\index.js"></script>
+    <style>
+        .l_Con, .l_Con_index {
+            margin: 100px auto 420px !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="equip-tips-wrap" id="TipsBox" style="display:none;"></div>
+    <section class="l_Con">
+        <!-- 商品详情 -->
+        <section class="goodsdetail">
+            <div class="blank">
+                <!-- https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b -->
+
+                <div class="role-detail-container" id="roleDetailContainer"></div>
+
+                <script type="text/html" id="role_index_template">
+                    <template>
+                        <div class="navBar clearfix">
+                            <a s-for="tab in tabs"
+                               href="javascript:void(0);"
+                               class="tab {{ curTab == tab.name ? 'tab_on' : '' }}"
+                               on-click="tabChange(tab.name, tab.is)">{{ tab.desc }}</a>
+                        </div>
+                        <div class="role-detail" id="roleContent"></div>
+                    </template>
+                </script>
+                <script type="text/javascript" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/role_mixin.js"></script>
+                <script type="text/html" id="template_popup_equip">
+                    <div class="detail-pop detail-pop_equip detail-pop_nsh">
+                        <div class="l_Clearfix">
+
+                            <div class="head l_Clearfix">
+                                <img class="{{ getColorByColorType(data, true) }}" src="{{ ResUrl }}/images/role/{{ data.iconId }}.png" alt="">
+                                <h2 class="name {{ getColorByColorType(data) }}">
+                                    <p s-html="g_parse_desc(data.name)"></p>
+                                </h2>
+                            </div>
+                            <div class="pop-top l_Clearfix">
+                                <ul class="desc-list fl">
+                                    <li s-html="g_parse_desc(tips.Level)"></li>
+                                    <li s-html="g_parse_desc(tips.Fastness || '')"></li>
+                                    <li s-html="g_parse_desc(tips.Score || '')"></li>
+                                </ul>
+                                <div class="l_Clearfix fr">
+                                    <p class="type c-white">{{ tips.Type || '' }}</p>
+                                    <p class="bind c-yellow">{{ data.isBind ? '已绑定' : '未绑定' }}</p>
+                                </div>
+                            </div>
+                            <div class="tisp-module" s-if="tips.BasicProp">
+                                <div class="line"></div>
+                                <ul class="desc-list">
+                                    {{ g_parse_desc(tips.BasicProp)|raw }}
+                                </ul>
+                            </div>
+                            <div class="tips-module" s-if="tips.Word || tips.EquipDescription">
+                                <div class="line"></div>
+                                <p class="desc">{{ g_parse_desc(tips.Word)|raw }}</p>
+                                <p class="desc">{{ g_parse_desc(tips.EquipDescription)|raw }}</p>
+                            </div>
+                            <div class="tips-module" s-if="tips.JadeInfo && tips.JadeInfo.length > 0">
+                                <div class="line"></div>
+                                <ul class="jade-icon-list">
+                                    <li s-for="item in tips.JadeInfo" class="{{ item.EffectStr ? 'has-effect' : '' }}">
+                                        <img src="{{ ResUrl }}/images/role/{{ item.IconStr }}.png" class="str" alt="">
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tips-module" s-if="tips.Description">
+                                <div class="line"></div>
+                                <p class="desc">{{ g_parse_desc(tips.Description)|raw }}</p>
+                            </div>
+                            <!-- <div class="tips-module" s-if="data.WordUpdateInfo && data.WordUpdateInfo.length > 0">
+                              <div s-for="item in data.WordUpdateInfo">
+                                <div class="line"></div>
+                                <div s-if="item.updateWord">
+                                  <p class="desc">还未进阶：{{ g_parse_desc(item.wordStr)|raw }}</p>
+                                  <p class="desc">进阶效果: {{ g_parse_desc(item.updateWord)|raw }}</p>
+                                </div>
+                                <div s-else>
+                                  <p class="desc">{{ g_parse_desc(item.wordStr)|raw }}</p>
+                                  <p class="desc color-orange">（已完成本阶段进阶）</p>
+                                </div>
+                              </div>
+                            </div> -->
+
+                            <div class="tips-module" s-if="tips.MergeCoutDesc">
+                                <div class="line"></div>
+                                <p class="desc c-white">{{ g_parse_desc(tips.MergeCoutDesc)|raw }}</p>
+                            </div>
+
+                            <div class="tips-module" s-if="tips.MagicUpdateUnsealInfo">
+                                <div class="line"></div>
+                                <p class="desc">{{ g_parse_desc(tips.MagicUpdateUnsealInfo)|raw }}</p>
+                            </div>
+
+                            <div class="tips-module" s-if="tips.BookDesc">
+                                <div class="line"></div>
+                                <p class="desc">{{ g_parse_desc(tips.BookDesc)|raw }}</p>
+                            </div>
+
+                            <div class="tips-module" s-if="tips.Slots && tips.Slots.length > 0">
+                                <div class="line"></div>
+                                <p class="desc">{{ g_parse_desc(handleSlots(tips.Slots))|raw }}</p>
+                            </div>
+                            <div class="tips-module" s-if="tips.JadeOnWeapon || tips.JadeOnArmor">
+                                <div class="line"></div>
+                                <p class="desc" s-if="tips.JadeOnWeapon">{{ g_parse_desc(tips.JadeOnWeapon)|raw }}</p>
+                                <p class="desc" s-if="tips.JadeOnArmor">{{ g_parse_desc(tips.JadeOnArmor)|raw }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </script>
+                <script>
+                    var PopupEquip = san.defineComponent({
+
+                        template: document.getElementById('template_popup_equip').innerHTML,
+
+                        handleSlots: function (slots) {
+                            function getSlotsDesc(slots) { // slots = [ ['a,aa','bbb'], [['ccc','ddd', ['888']],'k,kk'], [['eee','fff'],'ggg'] ];
+                                var desc = [];
+                                if (slots) {
+                                    if (slots instanceof Array && slots.length > 0) {
+                                        for (var i = 0; i < slots.length; i++) {
+                                            var slot = slots[i];
+                                            if (slot instanceof Array) {
+                                                var text = getSlotsDesc(slot);
+                                                desc.push(text.join(''));
+                                            } else if (typeof slot == 'string') { // 为空可能为 [{}]
+                                                desc.push(slot);
+                                            }
+                                        }
+                                    } else if (typeof slots == 'string') {
+                                        desc.push(slots);
+                                    }
+                                }
+                                return desc;
+                            }
+                            return getSlotsDesc(slots).join('');
+                        }
+                    });
+                    pupup_mixin(PopupEquip);
+                </script>
+                <script type="text/html" id="template_tab_basic">
+                    <section class="js_detail_pannel pannel tab_con_on detail-info-basic">
+                        <div class="basic-module basic-section">
+                            <p class="pic-wrap">
+                                <img src="{{ ResUrl }}/images/{{ role_icon }}" alt="{{equip.equip_k}}">
+                            </p>
+                            <div class="col-right basic-info-wrap">
+                                <ul class="data-list data-list-3">
+                                    <li s-for="item in basicInfoMod.items">
+                                        <span>{{ item.k }}:</span>
+                                        <span class="val {{ item.v == 'TotalScore' && getItemValue(item, Basic) > 100000 ? 'color-yellow' : '' }}">{{ getItemValue(item, Basic) }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- 基础属性 -->
+                        <div class="basic-section">
+                            <h2 class="basic-title">基本属性</h2>
+                            <div class="col-list-2">
+                                <div class="col-item" s-for="module in basicAttrMods.items">
+                                    <p class="basic-bg {{ module.pic }}"></p>
+                                    <div class="basic-attr-wrap col-right">
+                                        <ul class="data-list data-list-2">
+                                            <li s-for="item in module.items">
+                                                <span s-if="item.placeholder"></span>
+                                                <template s-else>
+                                                    <span>{{ handleAttrName(item) }}:</span>
+                                                    <span class="val">{{ getItemValue(handleAttrKey(item), Detail) }}</span>
+                                                </template>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 其他属性 -->
+                        <div class="basic-section" s-for="module in otherAttrMods">
+                            <h2 class="basic-title">{{ module.title }}</h2>
+                            <ul class="data-list data-list-4">
+                                <li s-for="item in module.items">
+                                    <span s-if="item.placeholder"></span>
+                                    <template s-else>
+                                        <span>{{ item.k }}:</span>
+                                        <span class="val">{{ getItemValue(item, Other) }}</span>
+                                    </template>
+                                </li>
+                            </ul>
+                        </div>
+                        <p class="normal-desc mtb10">注：红尘点每周日0点更新，实际点数以取出后游戏内展示为准</p>
+                    </section>
+                </script>
+                <script>
+                    var RoleTabBasic = san.defineComponent({
+                        template: document.getElementById('template_tab_basic').innerHTML,
+                        components: {
+
+                        },
+                        initData: function () {
+                            var ctx = this;
+                            return {
+                                role_icon: 'big/11.png',
+                                basicInfoMod: {
+                                    items: [
+                                        { k: '角色昵称', v: 'PlayerName' },
+                                        { k: '职业', v: 'School' },
+                                        { k: '等级', v: 'Grade' },
+                                        { k: '总评分', v: 'TotalScore', p: ctx.toFix0 },
+                                        { k: '装备评分', v: 'EquipScore' },
+                                        { k: '修为评分', v: 'XiuweiScore' },
+                                        { k: '修炼评分', v: 'XiulianScore' },
+                                        { k: '基础评分', v: 'BasicScore' },
+                                        { k: '当前经验', v: 'exp' },
+                                        { k: '升级所需', v: 'ExpLevelUpValue' },
+                                        { k: '奇遇点', v: 'QiYuScore' },
+                                        { k: '衣品值', v: 'TotalYipinValue' },
+                                        { k: '骏马值', v: 'TotalJunmaValue' },
+                                        { k: '说英雄点数', v: 'AchieveScore' }
+                                    ]
+                                },
+
+                                basicAttrMods: {
+                                    title: '基础属性',
+                                    items: [
+                                        {
+                                            pic: 'bg-blood',
+                                            items: [
+                                                { k: '气血', v: 'QiXue', p: ctx.onlyMax },
+                                                { k: '气血回复', v: 'QiXueHuiFu' },
+                                                { k: '跑步速度', v: 'PaoBuSuDu' }
+                                            ]
+                                        },
+                                        {
+                                            pic: 'bg-basic',
+                                            items: [
+                                                { k: '根骨', v: 'GenGu' },
+                                                { k: '力量', v: 'LiLiang' },
+                                                { k: '气海', v: 'QiHai' },
+                                                { k: '身法', v: 'ShenFa' },
+                                                { k: '耐力 ', v: 'NaiLi' }
+                                            ]
+                                        },
+                                        {
+                                            pic: 'bg-attack',
+                                            items: [
+                                                // 内外功比较特殊
+                                                { k: '攻击', v: 'GongJi', sp: true },
+                                                { k: '命中', v: 'MingZhong', sp: true },
+                                                { k: '攻击速度', v: 'GongJiSuDu', sp: true },
+                                                { k: '会心', v: 'HuiXin', sp: true },
+                                                { k: '会心伤害', v: 'HuiXinShangHai', sp: true },
+                                                { placeholder: true },
+                                                { k: '破盾', v: 'PoDun', sp: true },
+                                                { k: '元素伤害', v: 'YuanSuShangHai' },
+                                                { k: '控制增强', v: 'KongZhiZengQiang' },
+                                                { k: '流派克制', v: 'LiuPaiKeZhi' },
+                                                { k: '怪物克制', v: 'GuaiWuKeZhi' },
+                                                { k: '忽视元素抗性', v: 'HuShiYuanSuKangXing' }
+                                            ]
+                                        },
+                                        {
+                                            pic: 'bg-defense',
+                                            items: [
+                                                { k: '外功防御', v: 'WaiGongFangYu' },
+                                                { k: '内功防御', v: 'NeiGongFangYu' },
+                                                { k: '外功格挡 ', v: 'WaiGongGeDang' },
+                                                { k: '内功格挡', v: 'NeiGongGeDang' },
+                                                { k: '外功气盾', v: 'WaiGongQiDun' },
+                                                { k: '内功气盾', v: 'NeiGongQiDun' },
+
+                                                { k: '外功会心抗性', v: 'WaiGongHuiXinKangXing' },
+                                                { k: '内功会心抗性', v: 'NeiGongHuiXinKangXing' },
+                                                { k: '外功会心防御', v: 'WaiGongHuiXinFangYu' },
+                                                { k: '内功会心防御', v: 'NeiGongHuiXinFangYu' },
+
+                                                { k: '元素抗性', v: 'YuanSuKangXing' },
+                                                { k: '控制抗性', v: 'KongZhiKangXing' },
+                                                { k: '流派抵御', v: 'LiuPaiDiYu' },
+                                                { k: '怪物抵御', v: 'GuaiWuDiYu' }
+                                            ]
+                                        },
+                                    ]
+                                },
+
+                                otherAttrMods: [
+                                    {
+                                        title: '旅途-角色信息',
+                                        items: [
+                                            { k: '颜值', v: 'YanZhi', f: true },
+                                            { k: '闭关经验', v: 'BiGuanJingYan' },
+                                            { k: '技能经验', v: 'JiNengJingYan' },
+                                            { k: '体力', v: 'TiLi' },
+                                            { k: '活力', v: 'HuoLi' },
+                                            { k: '活跃度', v: 'HuoYueDu' }
+                                        ]
+                                    },
+                                    {
+                                        title: '旅途-行走江湖',
+                                        root: 'Detail',
+                                        items: [
+                                            { k: '帮会贡献', v: 'BangHuiGongXian' },
+                                            { k: '势力声望', v: 'ShiLiShengWang' },
+                                            { k: '科举点数', v: 'KeJuDianShu' },
+                                            { k: '江湖阅历  ', v: 'JiangHuYueLi' },
+
+                                            { k: '流派贡献', v: 'LiuPaiGongXian' },
+                                            { k: '武林威望', v: 'WuLinWeiWang' },
+                                            { k: '艮岳声望', v: 'ZuoYueShengWang' },
+                                            { k: '红尘点  ', v: 'HongChenDian' },
+
+                                            { placeholder: true },
+                                            { k: '可打孔威望上限  ', v: 'WuLingWeiWaShangXian' },
+                                            { k: '侠义点  ', v: 'XiaYiDian' },
+                                            { k: '逍遥点  ', v: 'ZuoYaoDian' },
+
+                                            { placeholder: true },
+                                            { placeholder: true },
+                                            { k: '良师点  ', v: 'LiangShiDian' },
+                                            { k: '惩恶扬善值', v: 'ChengEYangShanZhi' }
+                                        ]
+                                    },
+                                ]
+                            }
+                        },
+
+                        toFix0: function (num) {
+                            if (isNaN(num)) {
+                                return num;
+                            }
+                            return Math.floor(num);
+                        },
+
+                        onlyMax: function (str) {
+                            if (typeof str != 'string') {
+                                return str;
+                            }
+                            var arr = str.split('/');
+                            return arr.length > 1 ? arr[1] : str;
+                        },
+
+                        handleAttrName: function (item) {
+                            var isNeigong = this.data.get('isNeigong');
+                            if (item.sp && isNeigong) {
+                                return '内功' + item.k;
+                            } else if (item.sp) {
+                                return '外功' + item.k;
+                            }
+                            return item.k;
+                        },
+
+                        handleAttrKey: function (item) {
+                            var isNeigong = this.data.get('isNeigong');
+                            if (item.sp && isNeigong) {
+                                item.v = 'NeiGong' + item.v;
+                            } else if (item.sp) {
+                                item.v = 'WaiGong' + item.v;
+                            }
+                            return item;
+                        }
+
+                    });
+                    role_mixin(RoleTabBasic);
+                </script>
+                <script type="text/html" id="template_tab_equip">
+                    <section class="js_detail_pannel pannel detail-info-equip">
+                        <div class="wrap clearfix">
+                            <p class="normal-desc mtb10">总装评： <span class="val">{{ score }}</span></p>
+                            <div class="equip-list">
+                                <ul class="pic-list small-pic">
+                                    <li class="pic-item">
+                                        <img src="{{ResUrlVer}}/images/role_detail/equip_0.png" alt="">
+                                    </li>
+                                    <c-equip slotIndex="12" data="{{ equip }}" />
+                                    <c-equip slotIndex="13" data="{{ equip }}" />
+                                    <c-equip slotIndex="14" data="{{ equip }}" />
+                                </ul>
+                                <ul class="pic-list big-pic">
+                                    <c-equip slotIndex="3" data="{{ equip }}" />
+                                    <c-equip slotIndex="1" data="{{ equip }}" />
+                                    <c-equip slotIndex="15" data="{{ equip }}" />
+                                    <c-equip slotIndex="4" data="{{ equip }}" />
+                                </ul>
+                                <div class="bottom clearfix">
+                                    <div class="col-l clearfix">
+                                        <ul class="pic-list small-pic">
+                                            <c-equip slotIndex="10" data="{{ equip }}" />
+                                            <c-equip slotIndex="11" data="{{ equip }}" />
+                                        </ul>
+                                        <ul class="pic-list small-pic">
+                                            <c-equip slotIndex="8" data="{{ equip }}" />
+                                            <c-equip slotIndex="9" data="{{ equip }}" />
+                                        </ul>
+                                    </div>
+                                    <div class="col-l clearfix">
+                                        <ul class="pic-list middle-pic">
+                                            <c-equip slotIndex="7" data="{{ equip }}" />
+                                            <c-equip slotIndex="5" data="{{ equip }}" />
+                                            <c-equip slotIndex="6" data="{{ equip }}" />
+                                            <c-equip slotIndex="2" data="{{ equip }}" />
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </script>
+
+                <script type="text/html" id="component_equip">
+                    <div class="equip-templ">
+                        <li s-if="equipInfo.name" class="pic-item js_equip_tips {{ getColorByColorType(equipInfo, true) }}" data-tips="{{ stringifyData(equipInfo) }}">
+                            <img src="{{ResUrl}}/images/role/{{ equipInfo.iconId }}.png" alt="">
+                        </li>
+
+                        <li s-else class="pic-item">
+                            <img src="{{ResUrlVer}}/images/role_detail/equip_{{ slotIndex }}.png" alt="">
+                        </li>
+                    </div>
+                </script>
+                <script>
+
+                    var EquipComponent = san.defineComponent({
+                        template: document.getElementById('component_equip').innerHTML,
+                        initData: function () {
+                            return {
+                                slotIndex: '',
+                                data: []
+                            }
+                        },
+                        computed: {
+                            equipInfo: function () {
+                                var data = this.data.get('data')
+                                var slotIndex = this.data.get('slotIndex');
+                                var equipData = $.grep(data, function (item, i) {
+                                    return item.slotIndex == slotIndex;
+                                });
+                                return equipData[0] ? equipData[0] : {};
+                            }
+                        }
+
+                    });
+                    role_mixin(EquipComponent);
+                </script>
+                <script>
+                    var RoleTabEquip = san.defineComponent({
+                        template: document.getElementById('template_tab_equip').innerHTML,
+                        components: {
+                            'c-equip': EquipComponent
+                        },
+                        attached: function () {
+                            this.showPopupPage('.js_equip_tips', PopupEquip);
+                        }
+                    });
+                    role_mixin(RoleTabEquip);
+                </script>
+                <script type="text/html" id="template_tab_daoju">
+                    <section class="js_detail_pannel pannel detail-info-daoju">
+                        <div class="daoju-module">
+                            <h2 class="basic-title no-hairline">资产</h2>
+                            <ul class="data-list data-list-3">
+                                <li>
+                                    <span>剩余游戏时间：</span>
+                                    <span class="val">{{ handleRemainTime(basic.RemainGameTime) }}</span>
+                                </li>
+                            </ul>
+                            <ul class="data-list data-list-3">
+                                <li><span>元宝：</span><span class="val">{{ basic.YuanbaoValue|toThousands }}</span></li>
+                                <li><span>绑定元宝：</span><span class="val">{{ basic.BindYuanbaoValue|toThousands }}</span></li>
+                                <li><span>皇宋通宝：</span><span class="val">{{ basic.HuangsongTongbaoValue|toThousands }}</span></li>
+                            </ul>
+                            <ul class="data-list data-list-3">
+                                <li><span>铜钱：</span><span class="val">{{ basic.TongqianValue|toThousands }}</span></li>
+                                <li><span>仓库铜钱：</span><span class="val">{{ basic.CangkuTongqianValue|toThousands }}</span></li>
+                                <li><span>交子：</span><span class="val">{{ basic.JiaoziValue|toThousands }}</span></li>
+                            </ul>
+                            <ul class="data-list data-list-3">
+                                <li><span>技能交子：</span><span class="val">{{ other.JiNengJiaoZi|toThousands }}</span></li>
+                                <li><span>已开启仓库页数：</span><span class="val">{{ basic.WarehousePageNum|default('-') }}</span></li>
+                            </ul>
+                        </div>
+                        <div class="daoju-module" s-for="mod in moduleConf">
+                            <h2 class="basic-title">{{ mod.title }}</h2>
+                            <ul class="skill-list">
+                                <li s-if="!bagData[mod.key] || bagData[mod.key].length <=0" class="empty">无</li>
+                                <template s-else>
+                                    <li s-for="item in bagData[mod.key]" class="item {{ getColorByColorType(item, true) }} js_daoju_tips" data-tips="{{ stringifyData(item) }}">
+                                        <p class="pic-wrap">
+                                            <img src="{{ResUrl}}/images/role/{{ item.iconId }}.png" alt="">
+                                            <i class="num" s-if="item.count && item.count > 1">{{ item.count }}</i>
+                                        </p>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </section>
+                </script>
+                <script>
+                    var RoleTabDaoju = san.defineComponent({
+                        template: document.getElementById('template_tab_daoju').innerHTML,
+                        initData: function () {
+                            return {
+                                moduleConf: [
+                                    {
+                                        title: '包裹',
+                                        key: 'bag'
+                                    },
+                                    //{
+                                    //    title: '仓库1',
+                                    //    key: 'storage1'
+                                    //},
+                                    //{
+                                    //    title: '仓库2',
+                                    //    key: 'storage2'
+                                    //}
+                                ]
+                            }
+                        },
+
+                        attached: function () {
+                            this.showPopupPage('.js_daoju_tips', PopupEquip);
+                        },
+
+                        computed: {
+
+                            bagData: function () {
+                                var bag = this.data.get('bag');
+                                var storage1 = this.data.get('storage1');
+                                var storage2 = this.data.get('storage2');
+                                return {
+                                    bag: bag,
+                                    storage1: storage1,
+                                    storage2: storage2
+                                };
+                            }
+                        },
+
+                        stringifyData: function (data) {
+                            return JSON.stringify(data);
+                        },
+
+                        handleRemainTime: function (remainTime) {
+                            if (remainTime && remainTime > 0) {
+                                return '约' + parseInt(remainTime / 6) + '小时';
+                            }
+                            return 0;
+                        }
+                    });
+                    role_mixin(RoleTabDaoju);
+                </script>
+                <script type="text/html" id="template_tab_jingmai">
+                    <section class="js_detail_pannel pannel detail-info-jingmai">
+                        <ul class="data-list data-list-3">
+                            <li><span>经脉总评分：</span><span class="val">{{ score }}</span></li>
+                            <li><span>丹田真气：</span><span class="val">{{ jingMaiData.danTianZhenQi || '0' }}</span></li>
+                        </ul>
+                        <div class="gap"></div>
+                        <div class="basic-section">
+                            <h2 class="basic-title no-hairline">经脉增益属性：</h2>
+                            <ul class="data-list data-list-3">
+                                <li s-if="desc.length <= 0" class="empty">无</li>
+                                <template s-else>
+                                    <li s-for="item in desc" class="normal">
+                                        <span class="name">{{ item.name }}: </span>
+                                        <span class="val">{{ item.val }}</span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </section>
+                </script>
+                <script>
+                    var RoleTabJingmai = san.defineComponent({
+                        template: document.getElementById('template_tab_jingmai').innerHTML,
+                        computed: {
+                            desc: function () {
+                                var data = this.data.get('jingMaiData');
+                                if (data && data.effectDesc) {
+                                    var list = data.effectDesc.split('\n');
+                                    var result = [];
+                                    for (var i = 0; i < list.length; i++) {
+                                        var item = list[i].split(':');
+                                        result.push({ name: item[0], val: item[1] });
+                                    }
+                                    return result;
+                                } else {
+                                    return [];
+                                }
+                            }
+                        }
+                    });
+                </script>
+                <script type="text/html" id="template_tab_skill">
+                    <section class="js_detail_pannel pannel detail-info-skill">
+                        <div class="skill-tab-group">
+                            <a href="javascript:void(0);" s-for="item in skillTabs" class="tab {{ item.key == currentTab ? 'tab_on' : ''}}" on-click="tabChange(item.key)">{{ item.text }}</a>
+                        </div>
+                        <div class="skill-wrapper">
+                            <template s-if="currentTab == 'LIUPAI' ">
+                                <div class="tab_con_on pannel skill-liupai">
+                                    <p class="normal-desc mtb10">修为：<span class="val mr10">{{ xiuwei }}</span>&nbsp;注：此处的流派技能等级，已附加上武器、项链的技能等级词条加成效果</p>
+                                    <c-skill-basic s-for="mod in liupaiModules"
+                                                   title="{{ mod.title }}"
+                                                   data="{{ skillData[mod.key] }}" />
+                                </div>
+                            </template>
+                            <template s-if="currentTab == 'JIANGHU' ">
+                                <div class="pannel skill-jianghu">
+                                    <h2 class="title">江湖技能</h2>
+                                    <c-skill-basic s-for="mod in jianghuModules"
+                                                   title="{{ mod.title }}"
+                                                   data="{{ skillData[mod.key] }}" />
+                                    <div class="space20"></div>
+                                    <h2 class="title">生活技能</h2>
+                                    <div class="life-skill">
+                                        <ul class="skill-list">
+                                            <li s-if="!skillData.life || skillData.life.length <= 0" class="empty">无</li>
+                                            <template s-else>
+                                                <li class="item" s-for="item in skillData.life">
+                                                    <p class="pic-wrap js_skill_tips" data-tips="{{ stringifyData(item) }}">
+                                                        <img src="{{ResUrl}}/images/role/{{ item.iconId }}.png" alt="">
+                                                        <i class="num">{{ item.skillLv }}</i>
+                                                    </p>
+                                                    <div class="detail">
+                                                        <p class="type">{{ item.tooltip.OrgSkillName }}</p>
+                                                        <div class="practice">
+                                                            <span class="desc">熟练度</span>
+                                                            <p class="progress">
+                                                                <span class="fill" style="width:{{ item.shulian/item.shulianMax*100 }}%;"></span>
+                                                                <span class="val">{{ item.shulian }}/{{ item.shulianMax }}</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </template>
+                            <template s-if="currentTab == 'QINGGONG' ">
+                                <div class="pannel skill-qinggong">
+                                    <div class="col-left">
+                                        <ul class="skill-list">
+                                            <li class="item has-arrow-down">
+                                                <c-skill-qinggong name="轻功一段" data="{{ qinggongParser(0) }}" />
+                                            </li>
+                                            <li class="item has-arrow-down">
+                                                <c-skill-qinggong name="轻功二段" data="{{ qinggongParser(1) }}" />
+                                            </li>
+                                            <li class="item">
+                                                <c-skill-qinggong name="轻功三段" data="{{ qinggongParser(2) }}" />
+                                            </li>
+                                        </ul>
+                                        <div class="linbo">
+                                            <ul class="skill-list">
+                                                <li class="item">
+                                                    <c-skill-qinggong name="飞燕凌波" data="{{ qinggongParser(3) }}" />
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-middle">
+                                        <div class="jixing">
+                                            <ul class="skill-list">
+                                                <li class="item has-arrow-down arrow-yellow">
+                                                    <c-skill-qinggong name="疾行" data="{{ qinggongParser(4) }}" />
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="common-list">
+                                            <ul class="skill-list">
+                                                <li class="item has-arrow-down arrow-yellow">
+                                                    <c-skill-qinggong name="大轻功·起" data="{{ qinggongParser(5) }}" />
+                                                </li>
+                                                <li class="item">
+                                                    <c-skill-qinggong name="水上漂" data="{{ qinggongParser(9) }}" />
+                                                </li>
+                                                <li class="item">
+                                                    <c-skill-qinggong name="跑酷翻越" data="{{ qinggongParser(10) }}" />
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="common-list">
+                                            <ul class="skill-list">
+                                                <li class="item has-arrow-right">
+                                                    <c-skill-qinggong name="承·一式" data="{{ qinggongParser(6) }}" />
+                                                </li>
+                                                <li class="item has-arrow-right">
+                                                    <c-skill-qinggong name="承·二式" data="{{ qinggongParser(14) }}" />
+                                                </li>
+                                                <li class="item">
+                                                    <c-skill-qinggong name="承·三式" data="{{ qinggongParser(15) }}" />
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="common-list middle-last">
+                                            <ul class="skill-list">
+                                                <li class="item has-arrow-left">
+                                                    <c-skill-qinggong name="大轻功·终" data="{{ qinggongParser(8) }}" />
+                                                </li>
+                                                <li class="item">
+                                                    <c-skill-qinggong name="大轻功·绝" data="{{ qinggongParser(7) }}" />
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-right">
+                                        <ul class="skill-list">
+                                            <li class="item">
+                                                <c-skill-qinggong name="燕回风" data="{{ qinggongParser(11) }}" />
+                                            </li>
+                                            <li class="item item-qianjinzhui">
+                                                <c-skill-qinggong name="千斤坠" data="{{ qinggongParser(12) }}" />
+                                            </li>
+                                            <li class="item">
+                                                <c-skill-qinggong name="御气而行" data="{{ qinggongParser(13) }}" />
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </template>
+                            <template s-if="currentTab == 'QUWEI' ">
+                                <div class="interest-list">
+                                    <c-skill-basic data="{{ skillData.interest }}" />
+                                </div>
+                            </template>
+                        </div>
+                    </section>
+                </script>
+
+                <script type="text/html" id="template_popup_skill">
+                    <div class="detail-pop detail-pop_equip detail-pop_nsh">
+                        <div class="l_Clearfix">
+                            <div class="head l_Clearfix">
+                                <p class="pic-wrap has-level">
+                                    <img src="{{ ResUrl }}/images/role/{{ data.iconId }}.png" alt="">
+                                    <i class="num">{{ data.skillLv }}</i>
+                                </p>
+                                <h2 class="name">
+                                    <span>{{ g_parse_desc(data.SkillName)|raw }}</span>
+                                    <span s-if="data.$bookLevel" style="color: {{data.$bookLevelColor}};">【{{ data.$bookLevel }}】</span>
+                                </h2>
+                            </div>
+                            <div class="pop-top l_Clearfix">
+                                <ul class="desc-list">
+                                    <li s-html="g_parse_desc(tips.DetailInfo)"></li>
+                                </ul>
+                                <ul s-if="tips.SkillFeature && tips.SkillFeature.length > 0" class="block-list">
+                                    <li s-for="desc in tips.SkillFeature">{{ desc }}</li>
+                                </ul>
+                            </div>
+                            <div class="tips-module" s-if="tips.DetailStrSlots && tips.DetailStrSlots.length > 0">
+                                <div class="line"></div>
+                                <div s-for="slots in tips.DetailStrSlots">
+                                    <p s-for="desc in slots">{{ g_parse_desc(desc)|raw }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </script>
+                <script>
+                    var PopupSkill = san.defineComponent({
+                        template: document.getElementById('template_popup_skill').innerHTML
+                    });
+                    pupup_mixin(PopupSkill);
+                </script>
+                <script type="text/html" id="component_skill_basic">
+                    <div class="skill-module">
+                        <h2 class="skill-title" s-if="title">{{ title }}:</h2>
+                        <ul class="skill-list">
+                            <li s-if="!data || data.length <= 0" class="empty">无</li>
+                            <template s-else>
+                                <li class="item" s-for="equip in data">
+                                    <p class="pic-wrap js_skill_tips" data-tips="{{ stringifyData(equip) }}">
+                                        <img src="{{ResUrl}}/images/role/{{ equip.iconId }}.png" alt="">
+                                        <i class="num">{{ equip.skillLv }}</i>
+                                    </p>
+                                    <p class="name">{{ equip.tooltip.OrgSkillName }}</p>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </script>
+                <script>
+                    var SkillBasciComponent = san.defineComponent({
+                        template: document.getElementById('component_skill_basic').innerHTML
+                    });
+                    role_mixin(SkillBasciComponent);
+                </script>
+                <script type="text/html" id="component_skill_qinggong">
+                    <template>
+                        <p class="pic-wrap js_skill_tips" data-tips="{{ stringifyData(data) }}">
+                            <img src="{{ ResUrl }}/images/role/{{ data.iconId }}.png" alt="">
+                            <i class="num">{{ data.skillLv }}</i>
+                        </p>
+                        <p class="name">{{ name }}</p>
+                    </template>
+                </script>
+                <script>
+                    var SkillQingongComponent = san.defineComponent({
+                        template: document.getElementById('component_skill_qinggong').innerHTML
+                    });
+                    role_mixin(SkillQingongComponent);
+                </script>
+                <script>
+                    var RoleTabSkill = san.defineComponent({
+                        template: document.getElementById('template_tab_skill').innerHTML,
+                        components: {
+                            'c-skill-basic': SkillBasciComponent,
+                            'c-skill-qinggong': SkillQingongComponent
+                        },
+                        initData: function () {
+                            return {
+                                currentTab: 'LIUPAI',
+                                skillTabs: [
+                                    { text: '流派', key: 'LIUPAI' },
+                                    { text: '江湖与生活', key: 'JIANGHU' },
+                                    { text: '轻功', key: 'QINGGONG' },
+                                    { text: '趣味', key: 'QUWEI' }
+                                ],
+                                liupaiModules: [
+                                    {
+                                        title: '武器技能',
+                                        key: 'weapon'
+                                    },
+                                    {
+                                        title: '职业技能',
+                                        key: 'job'
+                                    },
+                                    {
+                                        title: '机制技能',
+                                        key: 'jizhi'
+                                    },
+                                    {
+                                        title: '绝技',
+                                        key: 'jueji'
+                                    },
+                                    {
+                                        title: '心法',
+                                        key: 'xinfa'
+                                    },
+                                ],
+                                jianghuModules: [
+                                    {
+                                        title: '奇遇技能',
+                                        key: 'qiyu'
+                                    },
+                                    {
+                                        title: '望气技能',
+                                        key: 'wangqi'
+                                    },
+                                    {
+                                        title: '旷世武学',
+                                        key: 'kuangshi'
+                                    }
+                                ]
+                            }
+                        },
+
+                        attached: function () {
+                            this.showPopupPage('.js_skill_tips', PopupSkill);
+                        },
+
+                        computed: {
+                            skillData: function () {
+                                var ctx = this;
+                                return {
+                                    weapon: ctx.data.get('weapon'),
+                                    job: ctx.data.get('job'),
+                                    jizhi: ctx.data.get('jizhi'),
+                                    jueji: ctx.data.get('jueji'),
+                                    xinfa: ctx.data.get('xinfa'),
+                                    qiyu: ctx.data.get('qiyu'),
+                                    wangqi: ctx.data.get('wangqi'),
+                                    kuangshi: ctx.data.get('kuangshi'),
+                                    life: ctx.data.get('life'),
+                                    interest: ctx.data.get('interest')
+                                }
+                            }
+                        },
+
+                        tabChange: function (key) {
+                            this.data.set('currentTab', key);
+                        },
+
+                        qinggongParser: function (index) {
+                            var qgInfo = this.data.get('qinggong');
+                            if (qgInfo[index]) {
+                                return qgInfo[index];
+                            } else {
+                                return {};
+                            }
+                        }
+                    });
+                    role_mixin(RoleTabSkill);
+                </script>
+                <script type="text/html" id="template_tab_waiguan">
+                    <section class="js_detail_pannel pannel detail-info-waiguan">
+
+                        <p class="normal-desc">总衣品：<span class="val">{{ data.score }}</span></p>
+                        <p class="normal-desc">骏马值：<span class="val">{{ data.junmaVal }}</span></p>
+                        <p class="normal-desc color-red">仅显示较珍贵且时限为永久的时装及坐骑</p>
+                        <div s-for="mod in waiguanModules" class="cloth-module" id="waiguanList">
+                            <h2 class="basic-title no-hairline">{{ mod.title }}</h2>
+                            <ul class="waiguan-list skill-list {{ mod.isCloth ? '' : 'normal-pic-list' }}">
+                                <li s-if="!data[mod.key] || data[mod.key].length <= 0" class="empty">无</li>
+                                <template s-else>
+                                    <li s-for="item in data[mod.key]" class="item {{ mod.tipsClass }} {{ mod.judgeExpire ? expireSign(item.tooltip) : '' }}" data-tips="{{ stringifyData(item) }}">
+                                        <p class="pic-wrap {{
+                mod.isMaAn ? getColorByColorType(item, true) :
+                (mod.isCloth || mod.isPet) ? getColorByQuality(item, 2, true) : getColorByQuality(item, 1, true)
+              }}
+              {{ item.CBGValuableFlag && item.CBGValuableFlag >= 1 ? 'valuable-skill' : '' }}">
+                                            <img src="{{ResUrl}}/images/role/{{ item.iconId || item.icon }}.png" alt="">
+                                        </p>
+                                        <p class="name">
+                                            {{ item[mod.nameKey] }}
+                                            <span s-if="mod.isXiangrui"><br />（等级{{ item.level }}）</span>
+                                        </p>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                        <div class="cloth-module">
+                            <p s-if="data.face" class="normal-desc">脸型：<span class="val">当前已保存{{ data.face.NieLianCount }}/{{ data.face.NieLianTotalCount }}</span></p>
+                        </div>
+
+                        <div class="cloth-module" id="waiguanMinghao">
+                            <h2 class="basic-title no-hairline">江湖名号（仅显示部分重要称号）</h2>
+                            <ul class="waiguan-list minghao-list">
+                                <li s-if="!titleInfos || titleInfos.length <= 0" class="empty">无</li>
+                                <li s-for="item in titleInfos" class="{{ 'li' + item.$length }}">
+                                    <span data-tips="{{ stringifyData(item) }}" class="js_tips_minghao">
+                                        <span class="tag {{ item.isForever ? '' : 'tag-qixian' }}">
+                                            <!--
+                                            -->
+                                            {{ item.isForever ? "永久" : "期限" }}
+                                            <!--
+                                            -->
+                                        </span>
+                                        <span class="text">{{ item.Text }}</span>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                </script>
+
+                <script type="text/html" id="template_popup_horse">
+                    <div class="detail-pop detail-pop_equip detail-pop_nsh">
+                        <div class="l_Clearfix">
+                            <div class="head l_Clearfix">
+                                <img class="{{ getColorByQuality(data, 1, true) }}" src="{{ ResUrl }}/images/role/{{ data.icon }}.png" alt="">
+                                <h2 class="name {{ getColorByQuality(data, 1) }}">{{ data.name }}</h2>
+                            </div>
+
+                            <p class="bind c-yellow align-right">已绑定</p>
+                            <div class="line"></div>
+                            <ul class="desc-list fl">
+                                <li>使用等级：<span class="val">{{ data.level }}</span></li>
+                                <li>骏马值: <span class="val">{{ data.junmaValue }}</span></li>
+                                <li>移动速度: <span class="val">{{ data.speed }}</span></li>
+                                <li>疾行速度：<span class="val">{{ data.dashSpeed }}</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </script>
+                <script>
+                    var PopupHorse = san.defineComponent({
+                        template: document.getElementById('template_popup_horse').innerHTML
+                    });
+                    pupup_mixin(PopupHorse);
+                </script>
+                <script type="text/html" id="template_popup_maan">
+                    <div class="detail-pop detail-pop_equip detail-pop_nsh">
+                        <div class="l_Clearfix">
+                            <div class="head l_Clearfix">
+                                <img class="{{ getColorByColorType(data, true) }}" src="{{ ResUrl }}/images/role/{{ data.iconId }}.png" alt="">
+                                <h2 class="name {{ getColorByColorType(data) }}">{{ data.name }}</h2>
+                            </div>
+                            <p class="bind c-yellow align-right">{{ data.isBind ? '已绑定' : '未绑定' }}</p>
+                            <div class="line"></div>
+                            <p class="desc">{{ g_parse_desc(tips.Level)|raw }}</p>
+                            <p class="desc">{{ g_parse_desc(tips.Fastness)|raw }}</p>
+                            <p class="desc">{{ g_parse_desc(tips.Score)|raw }}</p>
+                            <div class="tips-module" s-if="tips.EquipDescription">
+                                <div class="line"></div>
+                                <p class="desc">{{ g_parse_desc(tips.EquipDescription)|raw }}</p>
+                            </div>
+                            <div class="tips-module" s-if="tips.BasicProp">
+                                <div class="line"></div>
+                                <p class="desc">{{ g_parse_desc(tips.BasicProp)|raw }}</p>
+                            </div>
+                            <div class="tips-module" s-if="tips.Word">
+                                <div class="line"></div>
+                                <p class="desc">{{ g_parse_desc(tips.Word)|raw }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </script>
+                <script>
+                    var PopupMaan = san.defineComponent({
+                        template: document.getElementById('template_popup_maan').innerHTML
+                    });
+                    pupup_mixin(PopupMaan);
+                </script>
+                <script type="text/html" id="template_popup_cloth">
+                    <div class="detail-pop detail-pop_equip detail-pop_nsh">
+                        <div class="l_Clearfix">
+                            <div class="head l_Clearfix">
+                                <img class="{{ getColorByQuality(data, 2, true) }}" src="{{ ResUrl }}/images/role/{{ tips.SmallIcon }}.png" alt="">
+                                <h2 class="name {{ getColorByQuality(data, 2) }}">{{ g_parse_desc(data.ClothesName)|raw }}</h2>
+                            </div>
+                            <p class="bind c-yellow align-right">已绑定</p>
+                            <div class="line"></div>
+
+                            <div class="pop-top l_Clearfix">
+                                <ul class="desc-list">
+                                    <li>时装类型：<span class="val">{{ tips.FashionTypeName }}</span></li>
+                                    <li>稀有度：<span class="val">{{ tips.RarityName }}</span></li>
+                                    <li s-if="tips.FastnessStr">装备耐久：<span class="val">{{ tips.FastnessStr }}</span></li>
+                                    <li>衣品：<span class="val">{{ tips.Score }}</span></li>
+                                </ul>
+                            </div>
+                            <div class="line"></div>
+                            <ul class="desc-list l_Clearfix">
+                                <li>获取方式：{{ g_parse_desc(tips.SourceName)|raw }}</li>
+                                <li>详细属性：{{ g_parse_desc(tips.SourceDesc)|raw }}</li>
+                                <li class="desc">{{ g_parse_desc(tips.desc)|raw }}</li>
+                            </ul>
+                            <div class="line"></div>
+                            <p class="desc c-white">有效期：{{ handleLimitTime(tips) }}</p>
+                        </div>
+                    </div>
+                </script>
+                <script>
+                    var PopupCloth = san.defineComponent({
+                        template: document.getElementById('template_popup_cloth').innerHTML,
+                        computed: {
+                            tips: function () {
+                                var tips = this.data.get('data').Tooltip;
+                                return tips;
+                            }
+                        },
+
+                        handleLimitTime: function (tips) {
+                            return tips.ExpireDate && tips.ExpireDate != '' ? '至' + tips.ExpireDate : '永久';
+                        }
+                    });
+                    pupup_mixin(PopupCloth);
+                </script>
+                <script type="text/html" id="template_popup_pet">
+                    <div class="detail-pop detail-pop_equip detail-pop_nsh">
+                        <div class="l_Clearfix">
+                            <div class="head l_Clearfix">
+                                <img class="{{ getColorByQuality(data, 2, true) }}" src="{{ ResUrl }}/images/role/{{ data.iconId }}.png" alt="">
+                                <h2 class="name {{ getColorByQuality(data, 2) }}">{{ g_parse_desc(data.name)|raw }}</h2>
+                            </div>
+                            <div class="pop-top l_Clearfix">
+                                <ul class="desc-list fl">
+                                    <li>{{ g_parse_desc(tips.level)|raw }}</li>
+                                </ul>
+                                <div class="l_Clearfix fr">
+                                    <p class="bind c-yellow">已绑定</p>
+                                </div>
+                            </div>
+
+                            <div class="tips-module" s-if="tips.desc || tips.youhaoDesc || tips.getDesc">
+                                <div class="line"></div>
+                                <p class="desc">{{ g_parse_desc(tips.desc)|raw }}</p>
+                                <p class="desc">{{ g_parse_desc(tips.youhaoDesc)|raw }}</p>
+                                <p class="desc">{{ g_parse_desc(tips.getDesc)|raw }}</p>
+                            </div>
+                            <div class="tips-module" s-if="tips.time">
+                                <div class="line"></div>
+                                <p class="desc c-white">
+                                    {{ g_parse_desc(tips.time)|raw }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </script>
+                <script>
+                    var PopupPet = san.defineComponent({
+                        template: document.getElementById('template_popup_pet').innerHTML
+                    });
+                    pupup_mixin(PopupPet);
+                </script>
+                <script type="text/html" id="template_popup_desc">
+                    <div class="detail-pop detail-pop_equip detail-pop_nsh">
+                        <div class="l_Clearfix tips-module" >
+                            <p>{{ g_parse_desc(tips)|raw }}</p>
+                        </div>
+                    </div>
+                </script>
+                <script>
+                    var PopupDesc = san.defineComponent({
+                        template: document.getElementById('template_popup_desc').innerHTML
+                    });
+                    pupup_mixin(PopupDesc);
+                </script>
+                <script type="text/html" id="template_popup_minghao">
+                    <div class="detail-pop detail-pop_equip detail-pop_nsh detail-pop-minghao">
+                        <div class="l_Clearfix">
+                            <div class="head l_Clearfix">
+                                <h2 class="mhTitle">{{ data.Text }}</h2>
+                            </div>
+                            <div class="pop-top l_Clearfix">
+                                <span class="mhDesc">{{ data.TitleDescription }}</span>
+                            </div>
+                            <div class="line"></div>
+                            <ul class="desc-list l_Clearfix">
+                                <li>称号来历：<span class="mhVal">{{ data.Origin }}</span></li>
+                                <li>详细属性：<span class="mhVal">{{ data.Text1 || '无额外属性效果' }}</span></li>
+                            </ul>
+                            <div class="line"></div>
+                            <ul class="desc-list l_Clearfix">
+                                <li>有效期：<span class="mhVal">{{ data.durationText }}</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </script>
+                <script>
+                    var PopupMinghao = san.defineComponent({
+                        template: document.getElementById('template_popup_minghao').innerHTML
+                    });
+                    pupup_mixin(PopupMinghao);
+                </script>
+                <script>
+                    var RoleTabWaiguan = san.defineComponent({
+                        template: document.getElementById('template_tab_waiguan').innerHTML,
+                        initData: function () {
+                            return {
+                                waiguanModules: [
+                                    {
+                                        title: '坐骑',
+                                        key: 'horse',
+                                        tipsClass: 'js_tips_horse',
+                                        nameKey: 'name'
+                                    },
+                                    {
+                                        title: '已装备马鞍及挂饰',
+                                        key: 'saddle',
+                                        tipsClass: 'js_tips_maan',
+                                        nameKey: 'name',
+                                        isMaAn: true
+                                    },
+                                    {
+                                        title: '祥瑞',
+                                        key: 'xiangruiInfo',
+                                        tipsClass: 'js_tips_horse',
+                                        isXiangrui: true,
+                                        nameKey: 'name'
+                                    },
+                                    {
+                                        title: '时装-身体',
+                                        key: 'body',
+                                        tipsClass: 'js_tips_cloth',
+                                        isCloth: true,
+                                        nameKey: 'ClothesName'
+                                    },
+                                    {
+                                        title: '时装-头饰',
+                                        key: 'head',
+                                        tipsClass: 'js_tips_cloth',
+                                        isCloth: true,
+                                        nameKey: 'ClothesName'
+                                    },
+                                    {
+                                        title: '时装-发型',
+                                        key: 'hair',
+                                        tipsClass: 'js_tips_cloth',
+                                        isCloth: true,
+                                        nameKey: 'ClothesName'
+                                    },
+                                    {
+                                        title: '时装-背部',
+                                        key: 'back',
+                                        tipsClass: 'js_tips_cloth',
+                                        isCloth: true,
+                                        nameKey: 'ClothesName'
+                                    },
+                                    {
+                                        title: '时装-腰部',
+                                        key: 'waist',
+                                        tipsClass: 'js_tips_cloth',
+                                        isCloth: true,
+                                        nameKey: 'ClothesName'
+                                    },
+                                    {
+                                        title: '时装-武器',
+                                        key: 'weapon',
+                                        tipsClass: 'js_tips_cloth',
+                                        isCloth: true,
+                                        nameKey: 'ClothesName'
+                                    },
+                                    {
+                                        title: '轻功风格',
+                                        key: 'qinggongStyle',
+                                        tipsClass: 'js_tips_skill_style',
+                                        nameKey: 'styleSkillName'
+                                    },
+                                    {
+                                        title: '流派技能外观',
+                                        key: 'liupaiStyle',
+                                        tipsClass: 'js_tips_skill_style',
+                                        nameKey: 'styleSkillName'
+                                    },
+                                    {
+                                        title: '宠物',
+                                        key: 'pet',
+                                        tipsClass: 'js_tips_pet',
+                                        nameKey: 'name',
+                                        judgeExpire: true,
+                                        isPet: true
+                                    }
+                                ]
+                            }
+                        },
+
+                        computed: {
+                            titleInfos: function () {
+                                var titleInfo = this.data.get('data.titleInfo') || [];
+                                var result = [];
+                                for (var i = 0, max = titleInfo.length; i < max; i++) {
+                                    var item = titleInfo[i];
+                                    if (item) {
+                                        item = $.extend({}, item);
+                                        item.$length = Math.min(Math.ceil((item.Text || '').length / 10), 4);
+                                        result.push(item);
+                                    }
+                                }
+                                return result;
+                            }
+                        },
+
+                        attached: function () {
+                            this.showPopupPage('.js_tips_horse', PopupHorse);
+                            this.showPopupPage('.js_tips_maan', PopupMaan);
+                            this.showPopupPage('.js_tips_cloth', PopupCloth);
+                            this.showPopupPage('.js_tips_pet', PopupPet);
+                            this.showPopupPage('.js_tips_skill_style', PopupDesc);
+                            this.showPopupPage('.js_tips_minghao', PopupMinghao);
+                        },
+
+                        stringifyData: function (data) {
+                            return JSON.stringify(data);
+                        },
+
+                        // 宠物是否过期的标识
+                        expireSign: function (tips) {
+                            if (tips && tips.ExpireDate && tips.ExpireDate != '') {
+                                var currentTime = window.CurrentTime ? new Date(CurrentTime).getTime() : new Date().getTime();
+                                var expireTime = new Date(tips.ExpireDate).getTime();
+                                if (currentTime > expireTime) {
+                                    return 'clock-red';
+                                } else {
+                                    return 'clock-blue';
+                                }
+                            }
+                            return '';
+                        }
+                    });
+                    role_mixin(RoleTabWaiguan);
+                </script>
+                <script type="text/html" id="template_tab_practice">
+                    <section class="js_detail_pannel pannel detail-info-basic">
+                        <p class="normal-desc">帮会修炼：<span class="val">{{ score }}</span></p>
+                        <div class="basic-section" s-for="mod in moduleConf">
+                            <h2 class="basic-title">{{ mod.title }}</h2>
+                            <ul class="data-list data-list-4">
+                                <li s-if="!practiceData[mod.key] || practiceData[mod.key].length <= 0" class="empty">无</li>
+                                <template s-else>
+                                    <li s-for="item in practiceData[mod.key]" class="normal">
+                                        <span class="name">{{ item.name }}:</span>
+                                        <span class="val">{{ item.prop }}（{{ item.level }}级）</span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </section>
+                </script>
+                <script>
+                    var RoleTabPractice = san.defineComponent({
+                        template: document.getElementById('template_tab_practice').innerHTML,
+                        initData: function () {
+                            return {
+                                moduleConf: [
+                                    {
+                                        title: '基础属性',
+                                        key: 'basic'
+                                    },
+                                    {
+                                        title: '进阶属性',
+                                        key: 'jinjie'
+                                    },
+                                    {
+                                        title: '元素抗性',
+                                        key: 'yuansu'
+                                    },
+                                    {
+                                        title: '控制抗性',
+                                        key: 'kangxing'
+                                    }
+                                ]
+                            }
+                        },
+                        computed: {
+
+                            practiceData: function () {
+                                var ctx = this;
+                                return {
+                                    basic: ctx.data.get('basic'),
+                                    jinjie: ctx.data.get('jinjie'),
+                                    yuansu: ctx.data.get('yuansu'),
+                                    kangxing: ctx.data.get('kangxing')
+                                };
+                            }
+                        }
+                    });
+                </script>
+                <script type="text/html" id="template_tab_zhuangyuan">
+                    <section class="js_detail_pannel pannel detail-info-zhuangyuan">
+
+                        <div class="basic-section">
+                            <h2 class="basic-title no-hairline">基本属性</h2>
+                            <template s-if="NotEmpty">
+                                <ul class="data-list data-list-5">
+                                    <li><span>庄园评分:</span> <span class="val">{{ Score }}</span></li>
+                                    <li><span>等级:</span> <span class="val">{{ Grade }}</span></li>
+                                    <li><span>风水值:</span> <span class="val">{{ FengShui }}</span></li>
+                                    <li><span>实用值:</span> <span class="val">{{ ShiYong }}</span></li>
+                                    <li><span>美观值:</span> <span class="val">{{ MeiGuan }}</span></li>
+                                </ul>
+                            </template>
+                            <template s-else>
+                                <p class="empty">无</p>
+                            </template>
+                        </div>
+                        <div class="basic-section">
+                            <h2 class="basic-title">当前庄园资源</h2>
+                            <template s-if="NotEmpty">
+                                <ul class="data-list data-list-1">
+                                    <li><span class="txt">食物：</span><span class="val">{{ Food }}/{{ FoodLimit }}</span></li>
+                                    <li><span class="txt">木材：</span><span class="val">{{ Wood }}/{{ WoodLimit }}</span></li>
+                                    <li><span class="txt">石料：</span><span class="val">{{ Stone }}/{{ StoneLimit }}</span></li>
+                                    <li><span class="txt">金属：</span><span class="val">{{ Metal }}/{{ MetalLimit }}</span></li>
+                                </ul>
+                            </template>
+                            <template s-else>
+                                <p class="empty">无</p>
+                            </template>
+                        </div>
+                        <div s-if="PhotoList && PhotoList.length" class="basic-section">
+                            <h2 class="basic-title">庄园展示图<span on-click="imagePreview(0)">（点击查看大图）</span></h2>
+                            <p class="color-red">以下图片是玩家在庄园中自主截取，非实时更新</p>
+                            <ul class="data-list garden-images">
+                                <li class="item" s-for="photo, i in PhotoList">
+                                    <img src="{{ photo }}" on-click="imagePreview(i)">
+                                </li>
+                            </ul>
+                        </div>
+                        <div s-else>
+                            <h2 class="basic-title">庄园展示图</h2>
+                            <p class="empty">无</p>
+                        </div>
+                    </section>
+                </script>
+                <script type="text/javascript" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/image-preview.js"></script>
+                <link rel="stylesheet" href="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/css/image-preview.css">
+                <script>
+                    var RoleTabZhuangyuan = san.defineComponent({
+                        template: document.getElementById('template_tab_zhuangyuan').innerHTML,
+                        initData: function () {
+                            return {}
+                        },
+
+                        imagePreview: function (index) {
+                            var instance = new ImagePreview({
+                                images: this.data.get('PhotoList'),
+                                index: index
+                            });
+                            instance.show();
+                        }
+                    });
+                </script>
+                <script type="text/html" id="template_tab_tiangonglu1">
+                    <section class="js_detail_pannel pannel detail-info-tiangonglu"></section>
+                </script>
+                <script>
+                    var RoleTabTiangonglu = san.defineComponent({
+                        template: document.getElementById('template_tab_tiangonglu1').innerHTML,
+                        initData: function () {
+                            return {}
+                        }
+                    });
+                </script>
+                <script src="js\rawDataJson.js"></script>
+                <script>
+                    var RoleCotent = san.defineComponent({
+                        template: document.getElementById('role_index_template').innerHTML,
+                        initData: function () {
+                            return {
+                                curTab: 'basic',
+                                tabs: [
+                                    { desc: '基础信息', name: 'basic', is: RoleTabBasic },
+                                    { desc: '装备', name: 'equip', is: RoleTabEquip },
+                                    { desc: '道具', name: 'daoju', is: RoleTabDaoju },
+                                    { desc: '经脉', name: 'jingmai', is: RoleTabJingmai },
+                                    { desc: '技能', name: 'skill', is: RoleTabSkill },
+                                    { desc: '帮会修炼', name: 'practice', is: RoleTabPractice },
+                                    { desc: '外观', name: 'waiguan', is: RoleTabWaiguan },
+                                    { desc: '庄园', name: 'zhuangyuan', is: RoleTabZhuangyuan },
+                                    { desc: '天工炉', name: 'tiangonglu', is: RoleTabTiangonglu }
+                                ]
+                            }
+                        },
+
+                        attached: function () {
+                            this.showContent('basic', RoleTabBasic);
+                        },
+
+                        computed: {
+
+                            roleData: function () {
+                                return new RoleParse(rawData);
+                                //return new RoleParse(JSON.parse(rawData));
+                            }
+                        },
+
+                        tabChange: function (key, componentName) {
+                            if (this.data.get('curTab') == key) {
+                                return;
+                            }
+                            this.data.set('curTab', key);
+                            this.showContent(key, componentName);
+                        },
+
+                        showContent: function (key, componentName) {
+                            var ctx = this;
+                            var roleData = this.data.get('roleData');
+                            var roleContent = new componentName({
+                                data: roleData[key]()
+                            });
+                            document.getElementById('roleContent').innerHTML = '';
+                            roleContent.attach(document.getElementById('roleContent'));
+                        }
+                    });
+
+                    window.onload = function () {
+                        var roleContent = new RoleCotent();
+                        roleContent.attach(document.getElementById('roleDetailContainer'));
+                    };
+                </script>
+
+
+
+
+
+
+            </div>
+        </section>
+    </section>
+
+    <script charset="utf-8" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/jquery-1.12.4.min.js"></script>
+    <script src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/jquery.cookie.js"></script>
+    <script src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/jsclass-4.0.5-core.min.js"></script>
+
+    <!--[if lt IE 9]>
+    <script crossorigin src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/json2.js"></script>
+    <![endif]-->
+    <script>
+        var ProjectName = "n";
+        var ProjectNameCN = "逆水寒";
+        var LoginUrs = null;
+        var IsLogin = 0;
+        var CgiRoot = "/cbg";
+        var CgiRootUrl = "https://n.cbg.163.com/cbg";
+        var NodejsRootUrl = "http://qrcode.cbg.163.com";
+        var ResUrlVer = "https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b";
+        var ResUrl = "https://cbg-n.res.netease.com";
+        var ResVer = "rcf778cfa3a815afee2b1b";
+        var SafeCode = null;
+        var UnreadMsgCnt = 0;
+        var NoNavigation = 0;
+        var SelectServer = 1;
+        var QRCodeLoginType = "otp";
+        var MONEY_EQUIP_TYPE = "21000000";
+
+        var CurrentTime = "2019-12-06 22:19:41";
+
+        var IsOpenCbgWallet = true; // 用于站内信里面的js
+        var WalletData = { "is_locked": false, "checking_balance": 0, "balance": 0, "free_balance": 0 };
+
+    </script>
+    <script src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/main.js"></script>
+    <script src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/mgame_common.js"></script>
+    <script src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/wallet/wallet_utils.js"></script>
+    <link rel="stylesheet" href="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/css/urs-login.css">
+
+    <script type="text/javascript" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/equip_desc_parser.js"></script>
+    <!--<script type="text/javascript" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/role_parse.js"></script>-->
+    <script src="js\role_parse.js"></script>
+    <script type="text/javascript" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/equip_detail.js"></script>
+    <script>
+        var ServerId = 84;
+        var EquipId = 144028;
+        var GameOrdersn = "4-284-9278-0-2-1575640755";
+        var PriceYuan = "2750.00";
+        var AppointedRoleid = null;
+        var MinBuyLevel = 1;
+        $(init_equip_detail_page);
+    </script>
+
+</body>
+
+</html>

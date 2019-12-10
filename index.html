@@ -1,0 +1,365 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--[if lt IE 9]>
+    <script src="https://nie.res.netease.com/comm/html5/html5shiv.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/css/main.css">
+    <script src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/san.js"></script>
+    <script src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/san-mixin.js"></script>
+    <link rel="stylesheet" href="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/css/role.css">
+    <script>
+        var ProjectName = "n";
+        var ProjectNameCN = "逆水寒";
+        var LoginUrs = null;
+        var IsLogin = 0;
+        var CgiRoot = "/cbg";
+        var CgiRootUrl = "https://n.cbg.163.com/cbg";
+        var NodejsRootUrl = "http://qrcode.cbg.163.com";
+        var ResUrlVer = "https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b";
+        var ResUrl = "https://cbg-n.res.netease.com";
+        var ResVer = "rcf778cfa3a815afee2b1b";
+        var SafeCode = null;
+        var UnreadMsgCnt = 0;
+        var NoNavigation = 0;
+        var SelectServer = 1;
+        var QRCodeLoginType = "otp";
+        var MONEY_EQUIP_TYPE = "21000000";
+
+        var CurrentTime = "2019-12-06 15:54:00";
+
+        var IsOpenCbgWallet = true; // 用于站内信里面的js
+        var WalletData = { "is_locked": false, "checking_balance": 0, "balance": 0, "free_balance": 0 };
+
+    </script>
+    <script src="js\core.js"></script>
+    <script src="js\index.js"></script>
+</head>
+<body>
+    <div class="role-detail-container" id="roleDetailContainer">
+        <div>
+            <div class="navBar clearfix">
+                <a href="javascript:void(0);" class="tab ">基础信息</a><a href="javascript:void(0);" class="tab ">装备</a><a href="javascript:void(0);" class="tab tab_on">道具</a><a href="javascript:void(0);" class="tab ">经脉</a><a href="javascript:void(0);" class="tab ">技能</a><a href="javascript:void(0);" class="tab ">帮会修炼</a><a href="javascript:void(0);" class="tab ">外观</a><a href="javascript:void(0);" class="tab ">庄园</a><!--_64c4-->
+            </div>
+            <div class="role-detail" id="roleContent">
+                <section class="js_detail_pannel pannel detail-info-daoju">
+                    <div class="daoju-module">
+                        <h2 class="basic-title no-hairline">资产</h2>
+                        <ul class="data-list data-list-3">
+                            <li>
+                                <span>剩余游戏时间：</span>
+                                <span class="val">约14小时</span>
+                            </li>
+                        </ul>
+                        <ul class="data-list data-list-3">
+                            <li><span>元宝：</span><span class="val">49</span></li>
+                            <li><span>绑定元宝：</span><span class="val">0</span></li>
+                            <li><span>皇宋通宝：</span><span class="val">4,374</span></li>
+                        </ul>
+                        <ul class="data-list data-list-3">
+                            <li><span>铜钱：</span><span class="val">8,001</span></li>
+                            <li><span>仓库铜钱：</span><span class="val">0</span></li>
+                            <li><span>交子：</span><span class="val">681,192</span></li>
+                        </ul>
+                        <ul class="data-list data-list-3">
+                            <li><span>技能交子：</span><span class="val">1,338</span></li>
+                            <li><span>已开启仓库页数：</span><span class="val">4</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="daoju-module">
+                        <h2 class="basic-title">包裹</h2>
+                        <ul class="skill-list">
+                            <!--_64c10003-->
+                            <li class="item bg-color-purple js_daoju_tips" data-tips="{&quot;isSeed&quot;:false,&quot;isBind&quot;:true,&quot;slotIndex&quot;:53,&quot;iconId&quot;:&quot;item_task_lingpai1&quot;,&quot;colorType&quot;:9,&quot;isDivided&quot;:false,&quot;isFastFood&quot;:false,&quot;maskColorAlpha&quot;:0,&quot;isCodeLock&quot;:false,&quot;tooltip&quot;:{&quot;BigIcon&quot;:&quot;item_task_lingpai1&quot;,&quot;Bind&quot;:&quot;#cF8DF60已绑定&quot;,&quot;expiredFlag&quot;:1,&quot;ItemColor&quot;:9,&quot;Name&quot;:&quot;#F(18)百炼令&quot;,&quot;Slots&quot;:[[[&quot;用于在#Color_HighlightYellow各个流派以及主城的百炼令兑换#Color_Default处（右键使用寻路）兑换#Color_HighlightYellow百炼装备，也可用于一键重铸百炼装备以及升级百炼装备时消耗。#r#Color_Default百炼令可以通过参加#Color_HighlightYellow仗剑行、武林风云录（普通难度/英雄难度）、舞阳城（普通难度/英雄难度）、江湖挑战、江湖风雨事系列副本#Color_Default等玩法或分解69级及以下百炼装备获得，也可前往汴京庙会的#Color_HighlightYellow玩家商店#Color_Default购买#r#Color_FriendGreen首通上述副本可得大量百炼令。其中#Color_HighlightYellow仗剑行、武林风云录#Color_FriendGreen难度较低，适合初入江湖的侠士挑战，首通可得#Color_HighlightYellow80枚#Color_FriendGreen百炼令（在成就卡中领取）&quot;]]],&quot;cornerIconId&quot;:&quot;&quot;,&quot;TooltipType&quot;:2,&quot;isCodeLock&quot;:false,&quot;isTimeLock&quot;:false,&quot;ItemType&quot;:&quot;特殊&quot;,&quot;isSeed&quot;:false,&quot;isFastFood&quot;:false,&quot;Level&quot;:&quot;#cfffea5使用等级: #W1&quot;},&quot;isBroken&quot;:false,&quot;maskColor&quot;:0,&quot;bigIconId&quot;:&quot;item_task_lingpai1&quot;,&quot;isDividedToMe&quot;:false,&quot;count&quot;:999,&quot;name&quot;:&quot;#cC26AF5百炼令#n&quot;,&quot;expiredFlag&quot;:1}">
+                                <p class="pic-wrap">
+                                    <img src="https://cbg-n.res.netease.com/images/role/item_task_lingpai1.png" alt="">
+                                    <i class="num">999</i><!--_64c10015-->
+                                </p>
+                            </li>
+                            <li class="item bg-color-purple js_daoju_tips" data-tips="{&quot;isSeed&quot;:false,&quot;isBind&quot;:true,&quot;slotIndex&quot;:35,&quot;iconId&quot;:&quot;item_task_lingpai2&quot;,&quot;colorType&quot;:9,&quot;isDivided&quot;:false,&quot;isFastFood&quot;:false,&quot;maskColorAlpha&quot;:0,&quot;isCodeLock&quot;:false,&quot;tooltip&quot;:{&quot;BigIcon&quot;:&quot;item_task_lingpai2&quot;,&quot;Bind&quot;:&quot;#cF8DF60已绑定&quot;,&quot;expiredFlag&quot;:1,&quot;ItemColor&quot;:9,&quot;Name&quot;:&quot;#F(18)寒光令&quot;,&quot;Slots&quot;:[[[&quot;用于在#Color_HighlightYellow各个流派以及主城的寒光令兑换#Color_Default处（右键使用寻路）兑换#Color_HighlightYellow70级及以上百炼装备#Color_Default，也可用于一键重铸70级以上百炼装备以及升级百炼装备消耗。#r69级及以上玩家可以通过参加#Color_HighlightYellow英雄武林风云录、英雄舞阳城、风雪铁牢关#Color_Default等玩法或分解70级及以上百炼装备获得绑定与非绑定寒光令（首通英雄武林风云录可在成就卡中领取大量寒光令），也可通过参加#Color_HighlightYellow仗剑行、武林风云录、舞阳城、江湖挑战、江湖风雨事系列副本#Color_Default获得个人掉落宝箱，花费一定数量的交子获得绑定寒光令#Color_FriendGreen（其中仗剑行、武林风云录难度较低，适合初入江湖的侠士挑战）#Color_Default。在汴京庙会的#Color_HighlightYellow玩家商店#Color_Default里也可以买到其他玩家出售的寒光令。#r#Color_HighlightYellow武林风云录与英雄武林风云录共享进度，舞阳城与英雄舞阳城共享进度。#Color_Default#r寒光令也可在风雪铁牢关战利品兑换处1:1兑换成百炼令。&quot;]]],&quot;cornerIconId&quot;:&quot;&quot;,&quot;TooltipType&quot;:2,&quot;isCodeLock&quot;:false,&quot;isTimeLock&quot;:false,&quot;ItemType&quot;:&quot;特殊&quot;,&quot;isSeed&quot;:false,&quot;isFastFood&quot;:false,&quot;Level&quot;:&quot;#cfffea5使用等级: #W1&quot;},&quot;isBroken&quot;:false,&quot;maskColor&quot;:0,&quot;bigIconId&quot;:&quot;item_task_lingpai2&quot;,&quot;isDividedToMe&quot;:false,&quot;count&quot;:999,&quot;name&quot;:&quot;#cC26AF5寒光令#n&quot;,&quot;expiredFlag&quot;:1}">
+                                <p class="pic-wrap">
+                                    <img src="https://cbg-n.res.netease.com/images/role/item_task_lingpai2.png" alt="">
+                                    <i class="num">999</i><!--_c421114-->
+                                </p>
+                            </li>
+                            <li class="item bg-color-red js_daoju_tips" data-tips="{&quot;isSeed&quot;:false,&quot;isBind&quot;:false,&quot;slotIndex&quot;:60,&quot;iconId&quot;:&quot;item_21180018&quot;,&quot;colorType&quot;:7,&quot;isDivided&quot;:false,&quot;isFastFood&quot;:false,&quot;maskColorAlpha&quot;:0,&quot;isCodeLock&quot;:false,&quot;tooltip&quot;:{&quot;Slots&quot;:[[[&quot;#c88d7ff兑换70级及以上百炼装备的原料。#r#Color_Default分解#Color_HighlightYellow70级以上#Color_FriendGreen红色#Color_Default的头盔、甲胄、护盾、手套、腰带、鞋子#Color_Default有概率获得，分解#Color_HighlightYellow70级以上#Color_FriendGreen紫色#Color_Default的头盔、甲胄、护盾、手套、腰带、鞋子#Color_Default能获得多个。&quot;]]],&quot;Level&quot;:&quot;#cfffea5使用等级: #W1&quot;,&quot;Bind&quot;:&quot;&quot;,&quot;expiredFlag&quot;:1,&quot;Price&quot;:&quot;ZERO_PRICE&quot;,&quot;Name&quot;:&quot;#F(18)镶金丝线&quot;,&quot;isCodeLock&quot;:false,&quot;cornerIconId&quot;:&quot;&quot;,&quot;TooltipType&quot;:2,&quot;isTimeLock&quot;:false,&quot;ItemType&quot;:&quot;消耗&quot;,&quot;BigIcon&quot;:&quot;item_21180018&quot;,&quot;isSeed&quot;:false,&quot;isFastFood&quot;:false,&quot;ItemColor&quot;:7},&quot;isBroken&quot;:false,&quot;maskColor&quot;:0,&quot;bigIconId&quot;:&quot;item_21180018&quot;,&quot;isDividedToMe&quot;:false,&quot;count&quot;:999,&quot;name&quot;:&quot;#cFF5252镶金丝线#n&quot;,&quot;expiredFlag&quot;:1}">
+                                <p class="pic-wrap">
+                                    <img src="https://cbg-n.res.netease.com/images/role/item_21180018.png" alt="">
+                                    <i class="num">999</i><!--_64c10009-->
+                                </p>
+                            </li>
+                            <li class="item bg-color-red js_daoju_tips" data-tips="{&quot;isSeed&quot;:false,&quot;isBind&quot;:false,&quot;slotIndex&quot;:57,&quot;iconId&quot;:&quot;item_21180003&quot;,&quot;colorType&quot;:7,&quot;isDivided&quot;:false,&quot;isFastFood&quot;:false,&quot;maskColorAlpha&quot;:0,&quot;isCodeLock&quot;:false,&quot;tooltip&quot;:{&quot;Slots&quot;:[[[&quot;#Color_FriendGreen兑换70级及以上百炼装备的材料。#r#Color_Default分解#Color_HighlightYellow70级以上#Color_FriendGreen红色#Color_Default的武器、手镯、戒指、项链#Color_Default有概率获得，分解#Color_HighlightYellow70级以上#Color_FriendGreen紫色#Color_Default的武器、手镯、戒指、项链#Color_Default获得多个。&quot;]]],&quot;Level&quot;:&quot;#cfffea5使用等级: #W1&quot;,&quot;Bind&quot;:&quot;&quot;,&quot;expiredFlag&quot;:1,&quot;Price&quot;:&quot;ZERO_PRICE&quot;,&quot;Name&quot;:&quot;#F(18)天外陨铁&quot;,&quot;isCodeLock&quot;:false,&quot;cornerIconId&quot;:&quot;&quot;,&quot;TooltipType&quot;:2,&quot;isTimeLock&quot;:false,&quot;ItemType&quot;:&quot;消耗&quot;,&quot;BigIcon&quot;:&quot;item_21180003&quot;,&quot;isSeed&quot;:false,&quot;isFastFood&quot;:false,&quot;ItemColor&quot;:7},&quot;isBroken&quot;:false,&quot;maskColor&quot;:0,&quot;bigIconId&quot;:&quot;item_21180003&quot;,&quot;isDividedToMe&quot;:false,&quot;count&quot;:999,&quot;name&quot;:&quot;#cFF5252天外陨铁#n&quot;,&quot;expiredFlag&quot;:1}">
+                                <p class="pic-wrap">
+                                    <img src="https://cbg-n.res.netease.com/images/role/item_21180003.png" alt="">
+                                    <i class="num">999</i><!--_c42812-->
+                                </p>
+                            </li>
+                            <li class="item bg-color-red js_daoju_tips" data-tips="{&quot;isSeed&quot;:false,&quot;isBind&quot;:false,&quot;slotIndex&quot;:33,&quot;iconId&quot;:&quot;item_21180020&quot;,&quot;colorType&quot;:7,&quot;isDivided&quot;:false,&quot;isFastFood&quot;:false,&quot;maskColorAlpha&quot;:0,&quot;isCodeLock&quot;:false,&quot;tooltip&quot;:{&quot;Slots&quot;:[[[&quot;#c88d7ff兑换百炼装备的原料。#r#Color_Default分解#Color_HighlightYellow50级以上红色或紫色的头盔、甲胄、护盾、手套、腰带、鞋子#Color_Default即可获得。#r&quot;]]],&quot;Level&quot;:&quot;#cfffea5使用等级: #W1&quot;,&quot;Bind&quot;:&quot;&quot;,&quot;expiredFlag&quot;:1,&quot;Price&quot;:&quot;ZERO_PRICE&quot;,&quot;Name&quot;:&quot;#F(18)天蚕丝线&quot;,&quot;isCodeLock&quot;:false,&quot;cornerIconId&quot;:&quot;&quot;,&quot;TooltipType&quot;:2,&quot;isTimeLock&quot;:false,&quot;ItemType&quot;:&quot;消耗&quot;,&quot;BigIcon&quot;:&quot;item_21180020&quot;,&quot;isSeed&quot;:false,&quot;isFastFood&quot;:false,&quot;ItemColor&quot;:7},&quot;isBroken&quot;:false,&quot;maskColor&quot;:0,&quot;bigIconId&quot;:&quot;item_21180020&quot;,&quot;isDividedToMe&quot;:false,&quot;count&quot;:999,&quot;name&quot;:&quot;#cFF5252天蚕丝线#n&quot;,&quot;expiredFlag&quot;:1}">
+                                <p class="pic-wrap">
+                                    <img src="https://cbg-n.res.netease.com/images/role/item_21180020.png" alt="">
+                                    <i class="num">999</i><!--_c42963-->
+                                </p>
+                            </li>
+                            <li class="item bg-color-red js_daoju_tips" data-tips="{&quot;isSeed&quot;:false,&quot;isBind&quot;:false,&quot;slotIndex&quot;:5,&quot;iconId&quot;:&quot;item_21180019&quot;,&quot;colorType&quot;:7,&quot;isDivided&quot;:false,&quot;isFastFood&quot;:false,&quot;maskColorAlpha&quot;:0,&quot;isCodeLock&quot;:false,&quot;tooltip&quot;:{&quot;Slots&quot;:[[[&quot;#Color_FriendGreen兑换百炼装备的材料。#r#Color_Default分解#Color_HighlightYellow50级以上红色或紫色的武器、手镯、戒指、项链#Color_Default即可获得。&quot;]]],&quot;Level&quot;:&quot;#cfffea5使用等级: #W1&quot;,&quot;Bind&quot;:&quot;&quot;,&quot;expiredFlag&quot;:1,&quot;Price&quot;:&quot;ZERO_PRICE&quot;,&quot;Name&quot;:&quot;#F(18)玄铁铸料&quot;,&quot;isCodeLock&quot;:false,&quot;cornerIconId&quot;:&quot;&quot;,&quot;TooltipType&quot;:2,&quot;isTimeLock&quot;:false,&quot;ItemType&quot;:&quot;消耗&quot;,&quot;BigIcon&quot;:&quot;item_21180019&quot;,&quot;isSeed&quot;:false,&quot;isFastFood&quot;:false,&quot;ItemColor&quot;:7},&quot;isBroken&quot;:false,&quot;maskColor&quot;:0,&quot;bigIconId&quot;:&quot;item_21180019&quot;,&quot;isDividedToMe&quot;:false,&quot;count&quot;:999,&quot;name&quot;:&quot;#cFF5252玄铁铸料#n&quot;,&quot;expiredFlag&quot;:1}">
+                                <p class="pic-wrap">
+                                    <img src="https://cbg-n.res.netease.com/images/role/item_21180019.png" alt="">
+                                    <i class="num">999</i><!--_c42812-->
+                                </p>
+                            </li>
+                        </ul>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!--<script type="text/javascript" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/role_mixin.js"></script>-->
+    <script src="js\role_mixin.js"></script>
+    <script type="text/html" id="template_popup_equip">
+
+        <div class="detail-pop detail-pop_equip detail-pop_nsh">
+            <div class="l_Clearfix">
+
+                <div class="head l_Clearfix">
+                    <img class="{{ getColorByColorType(data, true) }}" src="{{ ResUrl }}/images/role/{{ data.iconId }}.png" alt="">
+                    <h2 class="name {{ getColorByColorType(data) }}">
+                        <p s-html="g_parse_desc(data.name)"></p>
+                    </h2>
+                </div>
+
+                <div class="pop-top l_Clearfix">
+                    <ul class="desc-list fl">
+                        <li s-html="g_parse_desc(tips.Level)"></li>
+                        <li s-html="g_parse_desc(tips.Fastness || '')"></li>
+                        <li s-html="g_parse_desc(tips.Score || '')"></li>
+                    </ul>
+                    <div class="l_Clearfix fr">
+                        <p class="type c-white">{{ tips.Type || '' }}</p>
+                        <p class="bind c-yellow">{{ data.isBind ? '已绑定' : '未绑定' }}</p>
+                    </div>
+                </div>
+
+                <div class="tisp-module" s-if="tips.BasicProp">
+                    <div class="line"></div>
+                    <ul class="desc-list">
+                        {{ g_parse_desc(tips.BasicProp)|raw }}
+                    </ul>
+                </div>
+
+                <div class="tips-module" s-if="tips.Word || tips.EquipDescription">
+                    <div class="line"></div>
+                    <p class="desc">{{ g_parse_desc(tips.Word)|raw }}</p>
+                    <p class="desc">{{ g_parse_desc(tips.EquipDescription)|raw }}</p>
+                </div>
+
+                <div class="tips-module" s-if="tips.JadeInfo && tips.JadeInfo.length > 0">
+                    <div class="line"></div>
+                    <ul class="jade-icon-list">
+                        <li s-for="item in tips.JadeInfo" class="{{ item.EffectStr ? 'has-effect' : '' }}">
+                            <img src="{{ ResUrl }}/images/role/{{ item.IconStr }}.png" class="str" alt="">
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tips-module" s-if="tips.Description">
+                    <div class="line"></div>
+                    <p class="desc">{{ g_parse_desc(tips.Description)|raw }}</p>
+                </div>
+
+                <!-- <div class="tips-module" s-if="data.WordUpdateInfo && data.WordUpdateInfo.length > 0">
+                  <div s-for="item in data.WordUpdateInfo">
+                    <div class="line"></div>
+                    <div s-if="item.updateWord">
+                      <p class="desc">还未进阶：{{ g_parse_desc(item.wordStr)|raw }}</p>
+                      <p class="desc">进阶效果: {{ g_parse_desc(item.updateWord)|raw }}</p>
+                    </div>
+                    <div s-else>
+                      <p class="desc">{{ g_parse_desc(item.wordStr)|raw }}</p>
+                      <p class="desc color-orange">（已完成本阶段进阶）</p>
+                    </div>
+                  </div>
+                </div> -->
+
+                <div class="tips-module" s-if="tips.MergeCoutDesc">
+                    <div class="line"></div>
+                    <p class="desc c-white">{{ g_parse_desc(tips.MergeCoutDesc)|raw }}</p>
+                </div>
+
+                <div class="tips-module" s-if="tips.MagicUpdateUnsealInfo">
+                    <div class="line"></div>
+                    <p class="desc">{{ g_parse_desc(tips.MagicUpdateUnsealInfo)|raw }}</p>
+                </div>
+
+                <div class="tips-module" s-if="tips.BookDesc">
+                    <div class="line"></div>
+                    <p class="desc">{{ g_parse_desc(tips.BookDesc)|raw }}</p>
+                </div>
+
+                <div class="tips-module" s-if="tips.Slots && tips.Slots.length > 0">
+                    <div class="line"></div>
+                    <p class="desc">{{ g_parse_desc(handleSlots(tips.Slots))|raw }}</p>
+                </div>
+
+                <div class="tips-module" s-if="tips.JadeOnWeapon || tips.JadeOnArmor">
+                    <div class="line"></div>
+                    <p class="desc" s-if="tips.JadeOnWeapon">{{ g_parse_desc(tips.JadeOnWeapon)|raw }}</p>
+                    <p class="desc" s-if="tips.JadeOnArmor">{{ g_parse_desc(tips.JadeOnArmor)|raw }}</p>
+                </div>
+
+            </div>
+        </div>
+    </script>
+    <script>
+        var PopupEquip = san.defineComponent({
+
+            template: document.getElementById('template_popup_equip').innerHTML,
+
+            handleSlots: function (slots) {
+                function getSlotsDesc(slots) { // slots = [ ['a,aa','bbb'], [['ccc','ddd', ['888']],'k,kk'], [['eee','fff'],'ggg'] ];
+                    var desc = [];
+                    if (slots) {
+                        if (slots instanceof Array && slots.length > 0) {
+                            for (var i = 0; i < slots.length; i++) {
+                                var slot = slots[i];
+                                if (slot instanceof Array) {
+                                    var text = getSlotsDesc(slot);
+                                    desc.push(text.join(''));
+                                } else if (typeof slot == 'string') { // 为空可能为 [{}]
+                                    desc.push(slot);
+                                }
+                            }
+                        } else if (typeof slots == 'string') {
+                            desc.push(slots);
+                        }
+                    }
+                    return desc;
+                }
+                return getSlotsDesc(slots).join('');
+            }
+        });
+        pupup_mixin(PopupEquip);
+    </script>
+    <script type="text/html" id="template_tab_daoju">
+        <section class="js_detail_pannel pannel detail-info-daoju">
+            <div class="daoju-module">
+                <h2 class="basic-title no-hairline">资产</h2>
+                <ul class="data-list data-list-3">
+                    <li>
+                        <span>剩余游戏时间：</span>
+                        <span class="val">{{ handleRemainTime(basic.RemainGameTime) }}</span>
+                    </li>
+                </ul>
+                <ul class="data-list data-list-3">
+                    <li><span>元宝：</span><span class="val">{{ basic.YuanbaoValue|toThousands }}</span></li>
+                    <li><span>绑定元宝：</span><span class="val">{{ basic.BindYuanbaoValue|toThousands }}</span></li>
+                    <li><span>皇宋通宝：</span><span class="val">{{ basic.HuangsongTongbaoValue|toThousands }}</span></li>
+                </ul>
+                <ul class="data-list data-list-3">
+                    <li><span>铜钱：</span><span class="val">{{ basic.TongqianValue|toThousands }}</span></li>
+                    <li><span>仓库铜钱：</span><span class="val">{{ basic.CangkuTongqianValue|toThousands }}</span></li>
+                    <li><span>交子：</span><span class="val">{{ basic.JiaoziValue|toThousands }}</span></li>
+                </ul>
+                <ul class="data-list data-list-3">
+                    <li><span>技能交子：</span><span class="val">{{ other.JiNengJiaoZi|toThousands }}</span></li>
+                    <li><span>已开启仓库页数：</span><span class="val">{{ basic.WarehousePageNum|default('-') }}</span></li>
+                </ul>
+            </div>
+
+            <div class="daoju-module" s-for="mod in moduleConf">
+                <h2 class="basic-title">{{ mod.title }}</h2>
+                <ul class="skill-list">
+                    <li s-if="!bagData[mod.key] || bagData[mod.key].length <=0" class="empty">无</li>
+                    <template s-else>
+                        <li s-for="item in bagData[mod.key]" class="item {{ getColorByColorType(item, true) }} js_daoju_tips" data-tips="{{ stringifyData(item) }}">
+                            <p class="pic-wrap">
+                                <img src="{{ResUrl}}/images/role/{{ item.iconId }}.png" alt="">
+                                <i class="num" s-if="item.count && item.count > 1">{{ item.count }}</i>
+                            </p>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+
+        </section>
+    </script>
+    <script>
+        var RoleTabDaoju = san.defineComponent({
+            template: document.getElementById('template_tab_daoju').innerHTML,
+            initData: function () {
+                return {
+                    moduleConf: [
+                        {
+                            title: '包裹',
+                            key: 'bag'
+                        },
+                        {
+                            title: '仓库1',
+                            key: 'storage1'
+                        },
+                        {
+                            title: '仓库2',
+                            key: 'storage2'
+                        }
+                    ]
+                }
+            },
+
+            attached: function () {
+                this.showPopupPage('.js_daoju_tips', PopupEquip);
+            },
+
+            computed: {
+
+                bagData: function () {
+                    var bag = this.data.get('bag');
+                    var storage1 = this.data.get('storage1');
+                    var storage2 = this.data.get('storage2');
+                    return {
+                        bag: bag,
+                        storage1: storage1,
+                        storage2: storage2
+                    };
+                }
+            },
+
+            stringifyData: function (data) {
+                return JSON.stringify(data);
+            },
+
+            handleRemainTime: function (remainTime) {
+                if (remainTime && remainTime > 0) {
+                    return '约' + parseInt(remainTime / 6) + '小时';
+                }
+                return 0;
+            }
+        });
+        role_mixin(RoleTabDaoju);
+    </script>
+    <script crossorigin="" charset="utf-8" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/jquery-1.12.4.min.js"></script>
+    <script crossorigin="" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/jsclass-4.0.5-core.min.js"></script>
+
+    <!--[if lt IE 9]>
+    <script crossorigin src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/json2.js"></script>
+    <![endif]-->
+    <script crossorigin="" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/main.js"></script>
+
+    <link rel="stylesheet" href="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/css/urs-login.css">
+
+    <script type="text/javascript" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/equip_desc_parser.js"></script>
+    <script type="text/javascript" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/role_parse.js"></script>
+    <script crossorigin="" type="text/javascript" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/equip_detail.js"></script>
+    <script>
+        var ServerId = 84;
+        var EquipId = 143619;
+        var GameOrdersn = "4-284-9278-0-1-1575292354";
+        var PriceYuan = "985282.00";
+        var AppointedRoleid = null;
+        var MinBuyLevel = 1;
+        $(init_equip_detail_page);
+    </script>
+</body>
+</html>
