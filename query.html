@@ -30,8 +30,9 @@
         }
     </script>
     <script src="js\config.js"></script>
-    <script src="js\entryLibrary.js"></script>
     <script src="js\class.js"></script>
+    <script src="js\entryLibrary.js"></script>
+    <script src="js\equipmentLibrary.js"></script>
     <script src="js\core.js"></script>
     <script src="js\index.js"></script>
     <style>
@@ -1125,7 +1126,7 @@
                 </script>
                 <script type="text/html" id="template_popup_desc">
                     <div class="detail-pop detail-pop_equip detail-pop_nsh">
-                        <div class="l_Clearfix tips-module" >
+                        <div class="l_Clearfix tips-module">
                             <p>{{ g_parse_desc(tips)|raw }}</p>
                         </div>
                     </div>
@@ -1421,12 +1422,12 @@
                         }
                     });
                 </script>
-                <script type="text/html" id="template_tab_tiangonglu1">
+                <script type="text/html" id="template_tab_tiangonglu">
                     <section class="js_detail_pannel pannel detail-info-tiangonglu"></section>
                 </script>
                 <script>
                     var RoleTabTiangonglu = san.defineComponent({
-                        template: document.getElementById('template_tab_tiangonglu1').innerHTML,
+                        template: document.getElementById('template_tab_tiangonglu').innerHTML,
                         initData: function () {
                             return {}
                         }
@@ -1498,7 +1499,6 @@
             </div>
         </section>
     </section>
-
     <script charset="utf-8" src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/jquery-1.12.4.min.js"></script>
     <script src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/jquery.cookie.js"></script>
     <script src="https://cbg-n.res.netease.com/rcf778cfa3a815afee2b1b/js/jsclass-4.0.5-core.min.js"></script>
